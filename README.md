@@ -72,4 +72,4 @@ catering-app/
 
 - **Desarrollador:** David  
 - **Bootcamp:** React Native Zero to Hero  
-- **Calificación Objetivo:** 100/100  
+ 
