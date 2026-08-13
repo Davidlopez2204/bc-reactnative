@@ -1,8 +1,14 @@
 // src/data/mockData.ts
 import { CateringItem } from '../types';
 
-// Creé esta lista de datos con 4 opciones reales de catering para probar la vista en ScrollView.
-// Utilicé el tipo CateringItem[] para garantizar que todos los objetos cumplan con la interfaz.
+export const CATERING_CATEGORIES = [
+  'Todas',
+  'Empresarial',
+  'Social / Bodas',
+  'Coctelería',
+  'Gourmet',
+];
+
 export const CATERING_ITEMS: CateringItem[] = [
   {
     id: '1',
@@ -10,8 +16,11 @@ export const CATERING_ITEMS: CateringItem[] = [
     category: 'Empresarial',
     capacity: '15 - 50 personas',
     pricePerPerson: 15.0,
-    description: 'Café gourmet de grano, té variados, jugos naturales, mini croissants y bocadillos salados.',
+    description: 'Café gourmet de grano, tés artesanales, jugos naturales prensados, mini croissants y bocadillos salados.',
     imageUrl: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=500&q=80',
+    rating: 4.9,
+    minPax: 15,
+    isPopular: true,
   },
   {
     id: '2',
@@ -19,17 +28,22 @@ export const CATERING_ITEMS: CateringItem[] = [
     category: 'Social / Bodas',
     capacity: '80 - 250 personas',
     pricePerPerson: 45.0,
-    description: 'Cena gourmet de 3 tiempos, mesa de quesos y carnes frías, bar abierto y cristalería fina.',
+    description: 'Cena gourmet de 3 tiempos, mesa de charcutería fina, bar abierto de autor y mantelería de lujo.',
     imageUrl: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=500&q=80',
+    rating: 5.0,
+    minPax: 80,
+    isPopular: true,
   },
   {
     id: '3',
     title: 'Buffet Internacional',
-    category: 'Eventos Corporativos',
+    category: 'Empresarial',
     capacity: '30 - 150 personas',
     pricePerPerson: 28.0,
-    description: 'Variedad de carnes a la parrilla, pastas artesanales, barra de ensaladas frescas y postres.',
+    description: 'Cortes finos a la parrilla, pastas italianas artesanales, barra de ensaladas frescas y estación de postres.',
     imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80',
+    rating: 4.8,
+    minPax: 30,
   },
   {
     id: '4',
@@ -37,7 +51,32 @@ export const CATERING_ITEMS: CateringItem[] = [
     category: 'Coctelería',
     capacity: '20 - 100 personas',
     pricePerPerson: 22.0,
-    description: 'Bocadillos fríos y calientes de autor, maridaje con vinos seleccionados y coctelería en vivo.',
+    description: 'Canapés fríos y calientes de autor, sommelier en vivo y maridaje con vinos de reserva.',
     imageUrl: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?w=500&q=80',
+    rating: 4.7,
+    minPax: 20,
+  },
+  {
+    id: '5',
+    title: 'Brunch de Gala al Aire Libre',
+    category: 'Social / Bodas',
+    capacity: '25 - 80 personas',
+    pricePerPerson: 32.0,
+    description: 'Estación de mimosas, tostadas de aguacate de autor, repostería francesa y waffles a la minuta.',
+    imageUrl: 'https://images.unsplash.com/photo-1533777857889-4be7c70b31f8?w=500&q=80',
+    rating: 4.9,
+    minPax: 25,
+  },
+  {
+    id: '6',
+    title: 'Cena Privada Chef en Casa',
+    category: 'Gourmet',
+    capacity: '6 - 20 personas',
+    pricePerPerson: 65.0,
+    description: 'Menú degustación de 5 tiempos preparado en vivo por un Chef Ejecutivo galardonado.',
+    imageUrl: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&q=80',
+    rating: 5.0,
+    minPax: 6,
+    isPopular: true,
   },
 ];
