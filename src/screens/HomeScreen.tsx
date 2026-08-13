@@ -9,6 +9,10 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { CATERING_ITEMS, CATERING_CATEGORIES } from '../data/mockData';
 import { CateringItem, QuoteDetails } from '../types';
@@ -20,10 +24,19 @@ export function HomeScreen(): React.JSX.Element {
   // 1. Estados para filtrado y búsqueda dinámicos
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todas');
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   // 2. Estado para control del Modal de Cotización
   const [selectedItemForModal, setSelectedItemForModal] = useState<CateringItem | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+  // Pull-to-refresh simulado para actualización de catálogo
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1200);
+  };
 
   // 3. Filtrado eficiente con useMemo según el texto ingresado y la categoría activa
   const filteredItems = useMemo(() => {
@@ -145,19 +158,29 @@ export function HomeScreen(): React.JSX.Element {
   );
 
   return (
-    <View style={styles.container}>
-      {/* Reemplazo de ScrollView por FlatList de alto rendimiento */}
-      <FlatList
-        data={filteredItems}
-        renderItem={({ item }) => (
-          <ItemCard item={item} onPress={handleOpenModal} />
-        )}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={renderListHeader}
-        ListEmptyComponent={renderListEmpty}
-        contentContainerStyle={styles.listContent}
-        showsVerticalScrollIndicator={false}
-      />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{ flex: 1 }}>
+          {/* Reemplazo de ScrollView por FlatList de alto rendimiento */}
+          <FlatList
+            data={filteredItems}
+            renderItem={({ item }) => (
+              <ItemCard item={item} onPress={handleOpenModal} />
+            )}
+            keyExtractor={(item) => item.id}
+            ListHeaderComponent={renderListHeader}
+            ListEmptyComponent={renderListEmpty}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      </TouchableWithoutFeedback>
 
       {/* Modal Interactivo de Cotización */}
       <QuoteModal
@@ -166,7 +189,7 @@ export function HomeScreen(): React.JSX.Element {
         onClose={() => setIsModalVisible(false)}
         onConfirmQuote={handleConfirmQuote}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -294,5 +317,8 @@ const styles = StyleSheet.create({
     color: COLORS.buttonText,
     fontWeight: 'bold',
     fontSize: FONT_SIZE.body,
+  },
+  separator: {
+    height: SPACING.md,
   },
 });
