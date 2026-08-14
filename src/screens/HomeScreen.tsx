@@ -74,6 +74,11 @@ export function HomeScreen(): React.JSX.Element {
   // 4. Header de la lista renderizado con ListHeaderComponent
   const renderListHeader = () => (
     <View style={styles.headerContainer}>
+      {/* Badge de Verificación del Desarrollador */}
+      <View style={styles.devBadge}>
+        <Text style={styles.devBadgeText}>👤 Alumno: David | React Native Semana 02</Text>
+      </View>
+
       {/* Título de la App */}
       <Text style={styles.headerSubtitle}>SERVICIOS EXCLUSIVOS</Text>
       <Text style={styles.headerTitle}>Gourmet Catering</Text>
@@ -205,6 +210,21 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     marginBottom: SPACING.md,
+  },
+  devBadge: {
+    backgroundColor: COLORS.primaryDark,
+    borderColor: COLORS.primary,
+    borderWidth: 1,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.xs,
+    borderRadius: 16,
+    alignSelf: 'flex-start',
+    marginBottom: SPACING.sm,
+  },
+  devBadgeText: {
+    color: COLORS.primary,
+    fontSize: FONT_SIZE.caption,
+    fontWeight: 'bold',
   },
   headerSubtitle: {
     fontSize: FONT_SIZE.caption,
