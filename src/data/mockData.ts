@@ -63,7 +63,7 @@ export const CATERING_ITEMS: CateringItem[] = [
     capacity: '25 - 80 personas',
     pricePerPerson: 32.0,
     description: 'Estación de mimosas, tostadas de aguacate de autor, repostería francesa y waffles a la minuta.',
-    imageUrl: 'https://images.unsplash.com/photo-1533777857889-4be7c70b31f8?w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500&q=80',
     rating: 4.9,
     minPax: 25,
   },
