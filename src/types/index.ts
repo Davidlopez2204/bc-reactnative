@@ -12,6 +12,8 @@ export interface CateringItem {
   rating: number;        // Valoración de clientes (1.0 - 5.0)
   minPax: number;        // Mínimo de invitados requeridos
   isPopular?: boolean;   // Badge opcional para servicios más solicitados
+  includes?: string[];   // Elementos detallados que incluye el servicio
+  chefNotes?: string;    // Nota especial del Chef o sommelier
 }
 
 // Estructura para el resumen de cotización generada en el Modal

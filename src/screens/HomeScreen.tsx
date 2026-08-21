@@ -14,13 +14,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import { HomeScreenProps } from '../navigation/types';
 import { CATERING_ITEMS, CATERING_CATEGORIES } from '../data/mockData';
 import { CateringItem, QuoteDetails } from '../types';
 import { ItemCard } from '../components/ItemCard';
 import { QuoteModal } from '../components/QuoteModal';
 import { COLORS, SPACING, FONT_SIZE } from '../constants/theme';
 
-export function HomeScreen(): React.JSX.Element {
+export function HomeScreen({ navigation }: HomeScreenProps): React.JSX.Element {
   // 1. Estados para filtrado y búsqueda dinámicos
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Todas');
@@ -35,10 +36,10 @@ export function HomeScreen(): React.JSX.Element {
     setIsRefreshing(true);
     setTimeout(() => {
       setIsRefreshing(false);
-    }, 1200);
+    }, 1000);
   };
 
-  // 3. Filtrado eficiente con useMemo según el texto ingresado y la categoría activa
+  // 3. Filtrado con useMemo según búsqueda y categoría activa
   const filteredItems = useMemo(() => {
     return CATERING_ITEMS.filter((item) => {
       const matchesSearch =
@@ -52,7 +53,12 @@ export function HomeScreen(): React.JSX.Element {
     });
   }, [searchQuery, selectedCategory]);
 
-  // Manejador para abrir el modal
+  // Navegación a la pantalla de detalle
+  const handleGoToDetail = (id: string) => {
+    navigation.navigate('Detail', { id });
+  };
+
+  // Manejador para abrir el modal de cotización
   const handleOpenModal = (item: CateringItem) => {
     setSelectedItemForModal(item);
     setIsModalVisible(true);
@@ -71,19 +77,19 @@ export function HomeScreen(): React.JSX.Element {
     );
   };
 
-  // 4. Header de la lista renderizado con ListHeaderComponent
+  // 4. Header de la lista
   const renderListHeader = () => (
     <View style={styles.headerContainer}>
       {/* Badge de Verificación del Desarrollador */}
       <View style={styles.devBadge}>
-        <Text style={styles.devBadgeText}>👤 Alumno: David | React Native Semana 02</Text>
+        <Text style={styles.devBadgeText}>👤 Alumno: David | React Native Semana 03</Text>
       </View>
 
       {/* Título de la App */}
       <Text style={styles.headerSubtitle}>SERVICIOS EXCLUSIVOS</Text>
       <Text style={styles.headerTitle}>Gourmet Catering</Text>
       <Text style={styles.headerDescription}>
-        Encuentra y cotiza el menú perfecto para tus eventos ejecutivos y celebraciones.
+        Encuentra, cotiza y explora el menú perfecto para tus eventos corporativos y celebraciones.
       </Text>
 
       {/* Campo de Búsqueda por Texto */}
@@ -142,7 +148,7 @@ export function HomeScreen(): React.JSX.Element {
     </View>
   );
 
-  // 5. Estado Vacío renderizado con ListEmptyComponent
+  // 5. Estado Vacío
   const renderListEmpty = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyIcon}>🍽️</Text>
@@ -169,11 +175,14 @@ export function HomeScreen(): React.JSX.Element {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1 }}>
-          {/* Reemplazo de ScrollView por FlatList de alto rendimiento */}
           <FlatList
             data={filteredItems}
             renderItem={({ item }) => (
-              <ItemCard item={item} onPress={handleOpenModal} />
+              <ItemCard
+                item={item}
+                onPressDetail={handleGoToDetail}
+                onPressQuote={handleOpenModal}
+              />
             )}
             keyExtractor={(item) => item.id}
             ListHeaderComponent={renderListHeader}
@@ -205,8 +214,8 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: SPACING.md,
-    paddingTop: 50,
-    paddingBottom: 40,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.xl,
   },
   headerContainer: {
     marginBottom: SPACING.md,

@@ -1,31 +1,33 @@
 # 🍽️ Gourmet Catering Services App
 
-> **Bootcamp React Native** | Semana 02 — Estado, Interacciones, Listas de Alto Rendimiento (`FlatList`) y Formularios (`Modal`)  
-> **Dominio Asignado:** Servicio de Catering  
-> **Tecnologías:** React Native, Expo, TypeScript, Flexbox, `useState`, `useMemo`, `FlatList`, `Modal`, `TextInput`, `Switch`  
+> **Bootcamp React Native** | Semana 03 — Navegación Móvil (`React Navigation 7`), Stack Navigator, Bottom Tabs y Rutas Tipadas  
+> **Dominio Asignado:** Servicio de Catering Gourmet  
+> **Tecnologías:** React Native, Expo SDK 57, TypeScript, `@react-navigation/native`, `@react-navigation/native-stack`, `@react-navigation/bottom-tabs`, `react-native-safe-area-context`, `react-native-screens`  
 
 ---
 
 ## 📱 Descripción del Proyecto
 
-Aplicación móvil para la exploración, filtrado y simulación de cotizaciones de servicios de catering gourmet (*Coffee Break Ejecutivo*, *Banquete para Bodas*, *Buffet Internacional*, *Cocktail & Canapés*, *Brunch de Gala*, *Cena Privada Chef en Casa*).
+Aplicación móvil para la exploración, filtrado, consulta detallada y simulación de cotizaciones de servicios de catering gourmet (*Coffee Break Ejecutivo*, *Banquete para Bodas*, *Buffet Internacional*, *Cocktail & Canapés*, *Brunch de Gala*, *Cena Privada Chef en Casa*, *Paella en Vivo*, *Estación de Sushi*, *Asado Criollo VIP*).
 
-En esta **Semana 02**, la aplicación evolucionó de una vista estática a una **experiencia totalmente dinámica**, incorporando búsqueda por texto en tiempo real, filtrado por categorías, optimización de memoria con `FlatList` y un modal interactivo con cálculo automático de presupuestos.
+En esta **Semana 03**, la aplicación implementa una **arquitectura de navegación profesional multi-pantalla** que combina pestañas inferiores (*Bottom Tabs*) con una pila de navegación nativa (*Stack Navigator*), soporte de rutas tipadas con TypeScript y paso de parámetros dinámicos entre vistas.
 
 ---
 
-## ✨ Características y Requisitos Cumplidos (Semana 02)
+## ✨ Características y Requisitos Cumplidos (Semana 03)
 
-- ⚡ **Rendimiento Nativo con `FlatList`**: Migración completa desde `ScrollView` utilizando `renderItem`, `keyExtractor`, `ListHeaderComponent` y `ListEmptyComponent`.
-- 🎨 **Design System & Tokens**: Consistencia visual mediante variables centralizadas en `src/constants/theme.ts` (`COLORS`, `SPACING`, `FONT_SIZE`).
-- 🔍 **Búsqueda Dinámica**: Búsqueda por palabra clave en tiempo real (`TextInput`) con botón para limpiar consulta.
-- 🏷️ **Filtro de Categorías**: Carrusel horizontal interactivo de chips para filtrar por tipo de evento (*Empresarial*, *Social / Bodas*, *Coctelería*, *Gourmet*).
-- 🧮 **Modal de Cotización Calculada (`Modal`)**:
-  - `TextInput` numérico para ajustar el número de invitados.
-  - Botones rápidos para sumar/restar pax (`-10`, `+10`, `+50`).
-  - Toggles interactivas con `Switch` para incluir *Bar Abierto* (+$10/pax) y *Staff de Meseros VIP* (+$5/pax).
-  - Desglose matemático y total actualizado en tiempo real.
-- 🚫 **Estado Vacío (`ListEmptyComponent`)**: Retroalimentación visual cuando la búsqueda no produce resultados, con un botón rápido para restablecer filtros.
+- 🧭 **Navegación Combinada (Tabs + Stack)**:
+  - **Pestaña "Explorar" (`HomeScreen`)**: Catálogo con barra de búsqueda en tiempo real, carrusel de categorías y tarjetas con navegación a detalle.
+  - **Pestaña "Favoritos" (`FavoritesScreen`)**: Lista de menús guardados con estado vacío interactivo y botón de exploración rápida.
+  - **Pantalla de Detalle (`DetailScreen`)**: Ficha completa del paquete de catering (inclusiones, nota del chef, selector de favoritos y cotizador integrado).
+- 🏷️ **Tipado Estricto de Rutas (TypeScript)**:
+  - Centralización de tipos en `src/navigation/types.ts` con `RootStackParamList` y `BottomTabParamList`.
+  - Paso seguro de parámetros (`route.params.id`) sin `any`.
+- ⚡ **Rendimiento Nativo**:
+  - Uso de `createNativeStackNavigator` con transiciones a 60 FPS mediante `react-native-screens`.
+  - Integración de `SafeAreaProvider` y `NavigationContainer` en la raíz.
+- 🎨 **Design Tokens Consistentes**:
+  - Tema oscuro gourmet con paleta centralizada en `src/constants/theme.ts`.
 
 ---
 
@@ -33,21 +35,26 @@ En esta **Semana 02**, la aplicación evolucionó de una vista estática a una *
 
 ```text
 catering-app/
-├── App.tsx                    # Punto de entrada y StatusBar
+├── App.tsx                    # Punto de entrada con SafeAreaProvider y NavigationContainer
 ├── app.json                   # Configuración de Expo
-├── package.json               # Dependencias
+├── package.json               # Dependencias (React Navigation 7)
 └── src/
     ├── constants/
     │   └── theme.ts           # Design Tokens (Colores, Espaciado, Tipografía)
     ├── types/
     │   └── index.ts           # Interfaces (CateringItem, QuoteDetails)
     ├── data/
-    │   └── mockData.ts        # Catálogo enriquecido de 6 servicios y categorías
+    │   └── mockData.ts        # Catálogo enriquecido de 9 servicios y categorías
     ├── components/
-    │   ├── ItemCard.tsx       # Tarjeta reusable con rating y badges
+    │   ├── ItemCard.tsx       # Tarjeta reusable con botones de detalle y cotización
     │   └── QuoteModal.tsx     # Modal interactivo de presupuesto con inputs/switches
+    ├── navigation/
+    │   ├── types.ts           # Tipos de navegación (RootStackParamList, BottomTabParamList)
+    │   └── RootNavigator.tsx  # Navegadores Stack + Bottom Tabs
     └── screens/
-        └── HomeScreen.tsx     # Pantalla principal basada en FlatList y filtros
+        ├── HomeScreen.tsx     # Pantalla principal (Explorar catálogo)
+        ├── FavoritesScreen.tsx# Pantalla de favoritos guardados
+        └── DetailScreen.tsx   # Pantalla de ficha completa del menú
 ```
 
 ---
@@ -59,7 +66,7 @@ catering-app/
    cd catering-app
    ```
 
-2. Instalar dependencias (si aplica):
+2. Instalar dependencias:
    ```bash
    npm install
    ```
@@ -75,9 +82,9 @@ catering-app/
 
 ---
 
-## 📋 Autores y Rúbrica de Evaluación
+## 📋 Rúbrica de Evaluación y Autores
 
 - **Desarrollador:** David  
 - **Bootcamp:** React Native Zero to Hero  
-- **Progreso:** Semana 02 Completada  
+- **Progreso:** Semana 03 Completada  
 - **Calificación Objetivo:** 100/100

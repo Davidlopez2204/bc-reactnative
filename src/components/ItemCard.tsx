@@ -6,12 +6,19 @@ import { COLORS, SPACING, FONT_SIZE } from '../constants/theme';
 
 interface ItemCardProps {
   item: CateringItem;
-  onPress: (item: CateringItem) => void;
+  onPressDetail: (id: string) => void;
+  onPressQuote?: (item: CateringItem) => void;
 }
 
-export function ItemCard({ item, onPress }: ItemCardProps): React.JSX.Element {
+export function ItemCard({ item, onPressDetail, onPressQuote }: ItemCardProps): React.JSX.Element {
   return (
-    <View style={styles.card}>
+    <Pressable
+      style={({ pressed }) => [
+        styles.card,
+        pressed && styles.cardPressed,
+      ]}
+      onPress={() => onPressDetail(item.id)}
+    >
       {/* Contenedor de la Imagen con Badges superpuestos si aplica */}
       <View style={styles.imageContainer}>
         <Image
@@ -45,18 +52,32 @@ export function ItemCard({ item, onPress }: ItemCardProps): React.JSX.Element {
           {item.description}
         </Text>
 
-        {/* Botón interactivo con estado pressed */}
-        <Pressable
-          style={({ pressed }) => [
-            styles.button,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={() => onPress(item)}
-        >
-          <Text style={styles.buttonText}>Cotizar Servicio</Text>
-        </Pressable>
+        {/* Fila de acciones */}
+        <View style={styles.actionsRow}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.detailButton,
+              pressed && styles.buttonPressed,
+            ]}
+            onPress={() => onPressDetail(item.id)}
+          >
+            <Text style={styles.detailButtonText}>Ver Detalles ➔</Text>
+          </Pressable>
+
+          {onPressQuote && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.quoteButton,
+                pressed && styles.buttonPressed,
+              ]}
+              onPress={() => onPressQuote(item)}
+            >
+              <Text style={styles.quoteButtonText}>Cotizar</Text>
+            </Pressable>
+          )}
+        </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -68,6 +89,10 @@ const styles = StyleSheet.create({
     borderColor: COLORS.borderColor,
     marginBottom: SPACING.lg,
     overflow: 'hidden',
+  },
+  cardPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.995 }],
   },
   imageContainer: {
     position: 'relative',
@@ -143,18 +168,40 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: SPACING.md,
   },
-  button: {
-    backgroundColor: COLORS.primary,
-    paddingVertical: 12,
+  actionsRow: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+    marginTop: SPACING.xs,
+  },
+  detailButton: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
+    justifyContent: 'center',
+  },
+  detailButtonText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  quoteButton: {
+    flex: 1,
+    backgroundColor: COLORS.primary,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quoteButtonText: {
+    color: COLORS.buttonText,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   buttonPressed: {
     opacity: 0.75,
-  },
-  buttonText: {
-    color: COLORS.buttonText,
-    fontSize: 15,
-    fontWeight: 'bold',
   },
 });
