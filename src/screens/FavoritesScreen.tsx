@@ -6,19 +6,21 @@ import {
   FlatList,
   Pressable,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import { FavoritesScreenProps } from '../navigation/types';
 import { CATERING_ITEMS } from '../data/mockData';
 import { ItemCard } from '../components/ItemCard';
 import { QuoteModal } from '../components/QuoteModal';
 import { COLORS, SPACING, FONT_SIZE } from '../constants/theme';
-import { CateringItem } from '../types';
+import { CateringItem, QuoteDetails } from '../types';
+import { useSavedStore, SavedStore } from '../stores/savedStore';
 
 export function FavoritesScreen({ navigation }: FavoritesScreenProps): React.JSX.Element {
-  // Lista inicial con servicios marcados como favoritos / destacados
-  const [favoriteItems, setFavoriteItems] = useState<CateringItem[]>(
-    CATERING_ITEMS.filter((item) => item.isPopular)
-  );
+  // Consumimos los elementos y acciones del store global de Zustand
+  const favoriteItems = useSavedStore((state: SavedStore) => state.items);
+  const addItem = useSavedStore((state: SavedStore) => state.addItem);
+  const clearItems = useSavedStore((state: SavedStore) => state.clearItems);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedForQuote, setSelectedForQuote] = useState<CateringItem | null>(null);
@@ -33,11 +35,26 @@ export function FavoritesScreen({ navigation }: FavoritesScreenProps): React.JSX
   };
 
   const handleClearFavorites = () => {
-    setFavoriteItems([]);
+    clearItems();
+    Alert.alert('Lista Limpia', 'Se han removido todos los favoritos de tu lista.');
   };
 
   const handleRestoreFavorites = () => {
-    setFavoriteItems(CATERING_ITEMS.filter((item) => item.isPopular));
+    const popularItems = CATERING_ITEMS.filter((item) => item.isPopular);
+    popularItems.forEach((item) => addItem(item));
+    Alert.alert('Restaurado', 'Se han restaurado los paquetes de catering recomendados.');
+  };
+
+  const handleConfirmQuote = (details: QuoteDetails) => {
+    setModalVisible(false);
+    Alert.alert(
+      '🎉 Presupuesto Generado',
+      `¡Gracias por cotizar "${details.item.title}"!\n\n` +
+      `• Invitados: ${details.guestsCount} personas\n` +
+      `• Bar Abierto: ${details.includeDrinks ? 'Sí' : 'No'}\n` +
+      `• Total Estimado: $${details.totalPrice.toLocaleString()} USD\n\n` +
+      `Nos pondremos en contacto contigo a la brevedad.`
+    );
   };
 
   const renderHeader = () => (
@@ -108,6 +125,7 @@ export function FavoritesScreen({ navigation }: FavoritesScreenProps): React.JSX
           visible={modalVisible}
           item={selectedForQuote}
           onClose={() => setModalVisible(false)}
+          onConfirmQuote={handleConfirmQuote}
         />
       )}
     </View>

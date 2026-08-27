@@ -13,15 +13,20 @@ import { DetailScreenProps } from '../navigation/types';
 import { CATERING_ITEMS } from '../data/mockData';
 import { QuoteModal } from '../components/QuoteModal';
 import { COLORS, SPACING, FONT_SIZE } from '../constants/theme';
-import { CateringItem } from '../types';
+import { CateringItem, QuoteDetails } from '../types';
+import { useSavedStore, SavedStore } from '../stores/savedStore';
 
 export function DetailScreen({ route, navigation }: DetailScreenProps): React.JSX.Element {
   const { id } = route.params;
-  const item = CATERING_ITEMS.find((c) => c.id === id);
+  const item = CATERING_ITEMS.find((i) => i.id === id);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedForQuote, setSelectedForQuote] = useState<CateringItem | null>(null);
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  // Consumimos el store de Zustand para el estado global de favoritos
+  const savedItems = useSavedStore((state: SavedStore) => state.items);
+  const toggleItem = useSavedStore((state: SavedStore) => state.toggleItem);
+  const isFavorite = savedItems.some((saved: CateringItem) => saved.id === id);
 
   if (!item) {
     return (
@@ -44,12 +49,26 @@ export function DetailScreen({ route, navigation }: DetailScreenProps): React.JS
   };
 
   const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite);
+    if (item) {
+      toggleItem(item);
+      Alert.alert(
+        isFavorite ? 'Eliminado de Favoritos' : '⭐ Agregado a Favoritos',
+        isFavorite
+          ? `Has removido "${item.title}" de tu lista.`
+          : `"${item.title}" ahora está guardado en tu lista de favoritos.`
+      );
+    }
+  };
+
+  const handleConfirmQuote = (details: QuoteDetails) => {
+    setModalVisible(false);
     Alert.alert(
-      isFavorite ? 'Eliminado de Favoritos' : '⭐ Agregado a Favoritos',
-      isFavorite
-        ? `Has removido "${item.title}" de tu lista.`
-        : `"${item.title}" ahora está guardado en tu lista de favoritos.`
+      '🎉 Presupuesto Generado',
+      `¡Gracias por cotizar "${details.item.title}"!\n\n` +
+      `• Invitados: ${details.guestsCount} personas\n` +
+      `• Bar Abierto: ${details.includeDrinks ? 'Sí' : 'No'}\n` +
+      `• Total Estimado: $${details.totalPrice.toLocaleString()} USD\n\n` +
+      `Nos pondremos en contacto contigo a la brevedad.`
     );
   };
 
@@ -159,6 +178,7 @@ export function DetailScreen({ route, navigation }: DetailScreenProps): React.JS
           visible={modalVisible}
           item={selectedForQuote}
           onClose={() => setModalVisible(false)}
+          onConfirmQuote={handleConfirmQuote}
         />
       )}
     </View>

@@ -1,4 +1,3 @@
-// src/navigation/RootNavigator.tsx
 import React from 'react';
 import { Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -8,12 +7,14 @@ import { HomeScreen } from '../screens/HomeScreen';
 import { FavoritesScreen } from '../screens/FavoritesScreen';
 import { DetailScreen } from '../screens/DetailScreen';
 import { COLORS, FONT_SIZE } from '../constants/theme';
+import { useSavedStore, SavedStore } from '../stores/savedStore';
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // 1. Navegador de Pestañas Inferiores (Bottom Tabs)
 function MainTabsNavigator(): React.JSX.Element {
+  const savedCount = useSavedStore((state: SavedStore) => state.items.length);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -51,6 +52,13 @@ function MainTabsNavigator(): React.JSX.Element {
         component={FavoritesScreen}
         options={{
           tabBarLabel: 'Favoritos',
+          tabBarBadge: savedCount > 0 ? savedCount : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: COLORS.primary,
+            color: COLORS.buttonText,
+            fontSize: 10,
+            lineHeight: 14,
+          },
           tabBarIcon: ({ focused }) => (
             <Text style={{ fontSize: 20 }}>
               {focused ? '⭐' : '☆'}
